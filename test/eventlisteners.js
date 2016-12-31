@@ -155,7 +155,19 @@ describe('event listeners', function() {
     assert.equal(vnode1, result[0]);
     assert.equal(vnode1, result[1]);
   });
-  it('shared handlers in parent and child nodes', function() {
+  it('access to the arguments in event handler', function() {
+    var result = [];
+    function clicked(arg1, arg2, ev, vnode) { result.push(arg1); result.push(arg2); }
+    var vnode1 = h('div', {on: {click: [clicked, 1, "2"] }}, [
+      h('a', 'Click my parent'),
+    ]);
+    elm = patch(vnode0, vnode1).elm;
+    elm.click();
+    assert.equal(2, result.length);
+    assert.equal(1, result[0]);
+    assert.equal("2", result[1]);
+  });
+  it('propagates shared handlers from child to parent nodes', function() {
     var result = [];
     var sharedHandlers = {
       click: function(ev) { result.push(ev); }
