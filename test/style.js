@@ -32,6 +32,11 @@ describe('style', function() {
     assert.equal(elm.style.fontSize, '10px');
     assert.equal(elm.style.display, 'block');
   });
+  it('does not updates styles passed as options directly', function() {
+    var vnode1 = h('i', {fontSize: '14px', display: 'inline'});
+    elm = patch(vnode0, vnode1).elm;
+    assert.equal(elm.style.fontSize, '');
+  });
   it('explicitly removes styles', function() {
     var vnode1 = h('i', {style: {fontSize: '14px'}});
     var vnode2 = h('i', {style: {fontSize: ''}});
