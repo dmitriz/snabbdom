@@ -19,6 +19,19 @@ describe('attributes', function() {
     assert.strictEqual(elm.getAttribute('minlength'), '1');
     assert.strictEqual(elm.getAttribute('value'), 'true');
   });
+  it('have their provided values also for the anchor tag', function() {
+    var vnode1 = h('a', {attrs: {href: '/foo', minlength: 1, value: true}});
+    elm = patch(vnode0, vnode1).elm;
+    assert.strictEqual(elm.getAttribute('href'), '/foo');
+    assert.strictEqual(elm.getAttribute('minlength'), '1');
+    assert.strictEqual(elm.getAttribute('value'), 'true');
+  });
+  it('throws when href passed directly as option', function() {
+    var vnode1 = h('a', {attrs: {href: '/foo', minlength: 1, value: true}});
+    var vnode2 = h('a', {href: '/foo'});
+    elm = patch(vnode0, vnode1).elm;
+    assert.throws(() => {elm = patch(vnode0, vnode2); elm.getAttribute('href')});
+  });
   it('are not omitted when falsy values are provided', function() {
     var vnode1 = h('div', {attrs: {href: null, minlength: 0, value: false}});
     elm = patch(vnode0, vnode1).elm;
