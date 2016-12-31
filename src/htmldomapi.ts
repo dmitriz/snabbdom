@@ -35,11 +35,11 @@ function appendChild(node: Node, child: Node): void {
   node.appendChild(child);
 }
 
-function parentNode(node: Node): HTMLElement {
+function parentNode(node: Node) {
   return node.parentElement;
 }
 
-function nextSibling(node: Node): Node {
+function nextSibling(node: Node) {
   return node.nextSibling;
 }
 
