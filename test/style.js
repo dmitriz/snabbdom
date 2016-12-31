@@ -32,7 +32,7 @@ describe('style', function() {
     assert.equal(elm.style.fontSize, '10px');
     assert.equal(elm.style.display, 'block');
   });
-  it('explicialy removes styles', function() {
+  it('explicitly removes styles', function() {
     var vnode1 = h('i', {style: {fontSize: '14px'}});
     var vnode2 = h('i', {style: {fontSize: ''}});
     var vnode3 = h('i', {style: {fontSize: '10px'}});
@@ -43,7 +43,7 @@ describe('style', function() {
     patch(vnode2, vnode3);
     assert.equal(elm.style.fontSize, '10px');
   });
-  it('implicially removes styles from element', function() {
+  it('implicitly removes styles from element', function() {
     var vnode1 = h('div', [h('i', {style: {fontSize: '14px'}})]);
     var vnode2 = h('div', [h('i')]);
     var vnode3 = h('div', [h('i', {style: {fontSize: '10px'}})]);
@@ -65,7 +65,7 @@ describe('style', function() {
     elm = patch(vnode2, vnode3).elm;
     assert.equal(elm.style.getPropertyValue('--myVar'), 3);
   });
-  it('explicialy removes css variables', function() {
+  it('explicitly removes css variables', function() {
     var vnode1 = h('i', {style: {'--myVar': 1}});
     var vnode2 = h('i', {style: {'--myVar': ''}});
     var vnode3 = h('i', {style: {'--myVar': 2}});
@@ -76,7 +76,7 @@ describe('style', function() {
     patch(vnode2, vnode3);
     assert.equal(elm.style.getPropertyValue('--myVar'), 2);
   });
-  it('implicially removes css variables from element', function() {
+  it('implicitly removes css variables from element', function() {
     var vnode1 = h('div', [h('i', {style: {'--myVar': 1}})]);
     var vnode2 = h('div', [h('i')]);
     var vnode3 = h('div', [h('i', {style: {'--myVar': 2}})]);
