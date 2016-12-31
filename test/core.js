@@ -28,6 +28,7 @@ var inner = prop('innerHTML');
 describe('snabbdom', function() {
   var elm, vnode0;
   beforeEach(function() {
+    // real DOM
     elm = document.createElement('div');
     vnode0 = elm;
   });
@@ -35,6 +36,12 @@ describe('snabbdom', function() {
     it('can create vnode with proper tag', function() {
       assert.equal(h('div').sel, 'div');
       assert.equal(h('a').sel, 'a');
+    });
+    it('can create vnode even with invalid tag', function() {
+      assert.equal(h('').sel, '');
+      assert.equal(h('invalid').sel, 'invalid');
+      assert.equal(h('Invalid').sel, 'Invalid');
+      assert.equal(h('tag-with-dash').sel, 'tag-with-dash');
     });
     it('can create vnode with children', function() {
       var vnode = h('div', [h('span#hello'), h('b.world')]);
@@ -49,10 +56,12 @@ describe('snabbdom', function() {
     });
     it('can create vnode with props and one child vnode', function() {
       var vnode = h('div', {}, h('span#hello'));
+      var vnode1 = h('div', {a: '55'}, h('span#hello'));
       assert.equal(vnode.sel, 'div');
+      assert.equal(vnode1.sel, 'div');
       assert.equal(vnode.children[0].sel, 'span#hello');
     });
-    it('can create vnode with text content', function() {
+    it('can create vnode with text content in array', function() {
       var vnode = h('a', ['I am a string']);
       assert.equal(vnode.children[0].text, 'I am a string');
     });
@@ -70,7 +79,7 @@ describe('snabbdom', function() {
       elm = patch(vnode0, h('div')).elm;
       assert.equal(elm.tagName, 'DIV');
     });
-    it('has different tag and id', function() {
+    it('has different tag and id as child element', function() {
       var elm = document.createElement('div');
       vnode0.appendChild(elm);
       var vnode1 = h('span#id');
@@ -101,6 +110,7 @@ describe('snabbdom', function() {
     });
     it('is receives classes in selector', function() {
       elm = patch(vnode0, h('div', [h('i.am.a.class')])).elm;
+      assert(!elm.firstChild.classList.contains('i'));
       assert(elm.firstChild.classList.contains('am'));
       assert(elm.firstChild.classList.contains('a'));
       assert(elm.firstChild.classList.contains('class'));
@@ -120,6 +130,8 @@ describe('snabbdom', function() {
     it('can create elements with text content', function() {
       elm = patch(vnode0, h('div', ['I am a string'])).elm;
       assert.equal(elm.innerHTML, 'I am a string');
+      elm1 = patch(vnode0, h('p', 'I am a string')).elm;
+      assert.equal(elm1.innerHTML, 'I am a string');
     });
     it('can create elements with span and text content', function() {
       elm = patch(vnode0, h('a', [h('span'), 'I am a string'])).elm;
@@ -129,6 +141,8 @@ describe('snabbdom', function() {
     it('can create elements with props', function() {
       elm = patch(vnode0, h('a', {props: {src: 'http://localhost/'}})).elm;
       assert.equal(elm.src, 'http://localhost/');
+      elm1 = patch(vnode0, h('img', {src: 'http://localhost/'})).elm;
+      assert.equal(elm1.src, '');
     });
     it('can create an element created inside an iframe', function(done) {
       // Only run if srcdoc is supported.
@@ -193,6 +207,13 @@ describe('snabbdom', function() {
       elm = patch(vnode1, vnode2).elm;
       assert.equal(elm.src, 'http://localhost/');
     });
+    it('changes the src prop for img tag', function() {
+      var vnode11 = h('img', {props: {src: 'http://other/'}});
+      var vnode21 = h('img', {props: {src: 'http://localhost/'}});
+      patch(vnode0, vnode11);
+      elm1 = patch(vnode11, vnode21).elm;
+      assert.equal(elm1.src, 'http://localhost/');      
+    });
     it('removes an elements props', function() {
       var vnode1 = h('a', {props: {src: 'http://other/'}});
       var vnode2 = h('a');
@@ -215,6 +236,10 @@ describe('snabbdom', function() {
           elm = patch(vnode0, vnode1).elm;
           assert.equal(elm.children.length, 1);
           elm = patch(vnode1, vnode2).elm;
+          assert.equal(elm.children.length, 3);
+          assert.equal(elm.children[1].innerHTML, '2');
+          assert.equal(elm.children[2].innerHTML, '3');
+          elm = patch(vnode0, vnode2).elm;
           assert.equal(elm.children.length, 3);
           assert.equal(elm.children[1].innerHTML, '2');
           assert.equal(elm.children[2].innerHTML, '3');
