@@ -66,7 +66,7 @@ describe('thunk', function() {
     assert.equal(elm.firstChild.innerHTML, 'Number is 2');
     assert.equal(called, 2);
   });
-  it('supports leaving out the `key` argument', function() {
+  xit('supports leaving out the `key` argument', function() {
     function vnodeFn(s) {
       return h('span.number', 'Hello ' + s);
     }
